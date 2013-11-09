@@ -12,6 +12,8 @@ public interface InterfaceServer extends Remote
 	
 	public User getUser(String username);
 	
+	public Card getCard(int id);
+	
 	public Workspace getWorkspace(int id);
 	
 	public ArrayList<User> getActiveUsers(String username);
@@ -26,14 +28,18 @@ public interface InterfaceServer extends Remote
 	
 	public boolean removeCardFromDeck(String username, int cardId);
 	
-	public Workspace startGame(String username, ArrayList<String> guests);
+	public boolean startGame(String username, ArrayList<String> guests);
 	
-	public Workspace startGame(int cardId, String username, ArrayList<String> guests);
+	public boolean startGame(int cardId, String username, ArrayList<String> guests);
 	
 	public boolean proposeCard( int workspaceId, int cardId);
 	
 	public boolean voteCard( int workspaceId, int cardId);
 	
 	public boolean sendMessage( int workspaceId, String username, String message);
+
+	public boolean acceptGame(String threadId, String username);
+
+	public boolean rejectGame(String threadId, String username);
 	
 }
