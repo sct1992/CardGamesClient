@@ -276,9 +276,7 @@ public class Game implements IGame
 		{
 			return false;
 		}
-		
 	}
-
 	
 	//---------------------------------------------------------------
 	//-------FALTA ESTO --union de interfaz-----------------------
