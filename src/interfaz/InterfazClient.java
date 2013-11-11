@@ -641,6 +641,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 			listUsers.setListData(new String[0]);	
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,  e.getMessage());
 		}
 		

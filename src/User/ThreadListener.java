@@ -48,9 +48,10 @@ public class ThreadListener extends Thread {
      * @param sSocket canal de comunicacion con el server
      * @param username el username del thread, se usa para notificar al servidor el canal de quien es
      */
-	public ThreadListener( Socket sSocket, String username)
+	public ThreadListener( Socket sSocket, String username, Game game)
     {
     	socketJugador = sSocket;
+    	this.game = game;
 		try {
 		    
 			in = new BufferedReader(new InputStreamReader(sSocket.getInputStream()));

@@ -8,8 +8,6 @@ public class Workspace implements Serializable{
 	
 	private int id;
 	
-	private String date;
-	
 	private String chat;
 	
 	private ArrayList<User> users;
@@ -21,11 +19,10 @@ public class Workspace implements Serializable{
 	
 	
 
-	public Workspace(int id, String date, String chat, ArrayList<User> users,
+	public Workspace(int id, String chat, ArrayList<User> users,
 			ArrayList<Card> playedCards, ArrayList<Card> proposedCards) {
 		super();
 		this.id = id;
-		this.date = date;
 		this.chat = chat;
 		this.users = users;
 		this.playedCards = playedCards;
@@ -40,14 +37,6 @@ public class Workspace implements Serializable{
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
 	}
 
 	public ArrayList<User> getUsers() {

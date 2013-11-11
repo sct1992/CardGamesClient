@@ -45,7 +45,7 @@ public class Game implements IGame
 	public Game (IListenerPush v)
 	{
 		interfazPush = v;
-		listener =null;
+		listener =null ;
 		user =null;
 		connectServer();
 	}
@@ -327,7 +327,8 @@ public class Game implements IGame
 	{
 		try 
 		{	
-			listener = new ThreadListener( new Socket( "localhost", 9999 ), user.getUsername());
+			listener = new ThreadListener( new Socket( "localhost", 9999 ), user.getUsername(),this);
+			listener.start();
 			return true;
 		} 
 		catch (Exception e) 
