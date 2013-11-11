@@ -2,10 +2,6 @@ package common;
 
 public class Card {
 
-	public static final String PROPOSED = "PROPOSED";
-
-	public static final String ACCEPTED = "ACCEPTED";
-	
 	private int id;
 	
 	private String name;
@@ -22,8 +18,6 @@ public class Card {
 	
 	private int votes;
 
-	
-	
 	public Card(int id, String name, String description, String imageUrl,
 			String category, String place, String owner, int votes) {
 		super();
@@ -104,6 +98,8 @@ public class Card {
 	public String toString()
 	{
 		return id + " - " + name; 
-	}	
+	}
+	
+	
 	
 }

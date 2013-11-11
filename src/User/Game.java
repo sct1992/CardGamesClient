@@ -1,9 +1,13 @@
 package User;
 
+import interfaz.IListenerPush;
+
 import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import common.Card;
 import common.InterfaceServer;
@@ -30,11 +34,17 @@ public class Game implements IGame
 	private InterfaceServer server;
 	
 	/**
+	 * interfaz q escucha los push
+	 */
+	private IListenerPush interfazPush;
+	
+	/**
 	 * contructor del juego
 	 * realiza la conexion con el servidor
 	 */
-	public Game ()
+	public Game (IListenerPush v)
 	{
+		interfazPush = v;
 		listener =null;
 		user =null;
 		connectServer();
@@ -67,6 +77,7 @@ public class Game implements IGame
 		boolean ans = server.login(user, password);
 		if(ans==true)
 		{	
+			this.user = server.getUser(user);
 			createListener();
 			return true;
 		}
@@ -90,6 +101,7 @@ public class Game implements IGame
 		boolean ans = server.signUp(username, name, password, email);
 		if(ans==true)
 		{	
+			this.user = server.getUser(username);
 			createListener();
 			return true;
 		}
@@ -189,12 +201,50 @@ public class Game implements IGame
 	 *@param usernames arraylist con los usuarios a jugar
 	 * @return true si se puede, false en caso de error
 	 */
-	public boolean startGame(ArrayList<String> usernames) {
+	public boolean startGame(ArrayList<String> usernames) throws Exception {
 		
-		return server.startGame( user.getUsername(),usernames);
+		if(activeWorkspaceWithUsernames(usernames))
+		{
+		throw new Exception("Ya existe un active Workspace con los usuarios elegidos");
+		}
+		
+		if(!server.startGame(user.getUsername(),usernames))
+		{
+			throw new Exception("Error creando la partida, compañeros no encontrados");
+		}
+		return true;
 	}
 
 
+	private boolean activeWorkspaceWithUsernames(ArrayList<String> usernames)
+	{
+		
+		
+		ArrayList<Workspace> all = getMyWorkspaces();
+		
+		for (int i = 0; i < all.size(); i++) 
+		{
+			 Workspace tmp = all.get(i);
+			 ArrayList<User> usuarios = tmp.getUsers();
+		
+			 ArrayList<String> usuariosS = new ArrayList<String>();
+			 for (int j = 0; j < usuarios.size(); j++) 
+			 {
+				 usuariosS.add(usuarios.get(i).getUsername());
+			 }
+			 
+			 //Me añado
+			 usuariosS.add(user.getUsername());
+			 
+			if(usernames.containsAll(usuariosS) && usuariosS.containsAll(usernames))
+			{
+				return true;
+			}
+		
+		}
+		return false;
+		
+	}
 	/**
 	 * Metodo que es llamado para comenzar un juego a partir de una carta
 	 * @param usernames arraylist con los usuarios a jugar
@@ -211,10 +261,19 @@ public class Game implements IGame
 	 * metodo que se encarga de proponer una carta
 	 * @param workspaceId id del workspace en el cual se propone la carta
 	 * @param cardId id de la carta proponer
-	 * @return true si se propone, false en caso de error
+	 * @return true si se propone, false en caso de que la carta ya este 
 	 */
 	public boolean proposeCard(int workspaceId, int cardId) {
 		
+		Workspace actual = getWorkspace(workspaceId);
+		ArrayList<Card> cards= actual.getProposedCards();
+		
+		for (int i = 0; i < cards.size(); i++) {
+			if(cards.get(i).getId()==cardId)
+			{
+				return false;
+			}
+		}
 		return server.proposeCard(workspaceId, cardId);
 	}
 
@@ -276,7 +335,9 @@ public class Game implements IGame
 		{
 			return false;
 		}
+		
 	}
+
 	
 	//---------------------------------------------------------------
 	//-------FALTA ESTO --union de interfaz-----------------------
@@ -288,13 +349,22 @@ public class Game implements IGame
 	}
 
 	public void pushedNewGame(String userCreator, String idThreat) {
-		// TODO Auto-generated method stub
+	
+		String message = "El usuario: " + userCreator +" te esta invitando a jugar una partida con id temporal: \n" + idThreat;
+		int rta = JOptionPane.showConfirmDialog(null,message );
+		if(rta == JOptionPane.YES_OPTION || rta == JOptionPane.OK_OPTION)
+		{
+			server.acceptGame(idThreat, user.getUsername());
+		}
+		else
+		{
+			server.rejectGame(idThreat, user.getUsername());
+		}
 		
 	}
 
-	public void pushedRefresh(int idWorkspace) {
-		// TODO Auto-generated method stub
-		
+	public void pushedRefresh(int idWorkspace, boolean onTop) {
+		interfazPush.refresh(idWorkspace, onTop);
 	}
 
 	public void pushedWorkspaceRejected(String message) {

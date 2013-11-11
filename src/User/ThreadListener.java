@@ -102,6 +102,7 @@ public class ThreadListener extends Thread {
 			   String cardIdString=tmp[1];
 			   int cardId = Integer.parseInt(cardIdString);
 			   String idThreat = tmp[2];
+	
 			   game.pushedNewGameCard(userCreator, cardId , idThreat);
 		   }
 		   else if(command.startsWith(Protocol.NEW_GAME))
@@ -113,9 +114,11 @@ public class ThreadListener extends Thread {
 		   }
 		   else if (command.startsWith(Protocol.REFRESH))
 		   {
-			   String tmp = command.split(Protocol.SEPARATOR1)[1];
-			   int idWorkspace= Integer.parseInt(tmp);
-			   game.pushedRefresh(idWorkspace);
+			   String[] tmp = command.split(Protocol.SEPARATOR1)[1].split(Protocol.SEPARATOR2);
+			   int idWorkspace= Integer.parseInt(tmp[0]);
+			   boolean onTop = Boolean.parseBoolean(tmp[1]);
+			   
+			   game.pushedRefresh(idWorkspace, onTop);
 		   }
 		   else if (command.startsWith(Protocol.WORKSPACE_REJECTED))
 		   {
@@ -123,6 +126,7 @@ public class ThreadListener extends Thread {
 			   String message = command.split(Protocol.SEPARATOR1)[1];
 			   game.pushedWorkspaceRejected(message);
 		   }
+		   
 		   
 	   }
 

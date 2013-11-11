@@ -92,7 +92,7 @@ public interface IGame
 	 *@param usernames arraylist con los usuarios a jugar
 	 * @return true si se puede, false en caso de error
 	 */
-	public boolean startGame(ArrayList<String> usernames);
+	public boolean startGame(ArrayList<String> usernames) throws Exception;
 	
 	/**
 	 * Metodo que es llamado para comenzar un juego a partir de una carta
