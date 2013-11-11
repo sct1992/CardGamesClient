@@ -146,8 +146,7 @@ public class Game implements IGame
 	 * @return arraylist de cartas 
 	 */
 	public ArrayList<Card> getCards() 
-	{
-		
+	{		
 		return server.getCards(user.getUsername());
 	}
 

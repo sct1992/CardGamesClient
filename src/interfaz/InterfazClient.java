@@ -718,7 +718,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 			if(primera==null)
 			{
 				primera= baraja.get(0);
-				listMiBaraja.setSelectedIndex(0);
+//				listMiBaraja.setSelectedIndex(0);
 			}
 			lblIdNombreCarta.setText(primera.getId()+" - "+ primera.getName() );	
 			ImageIcon image = new ImageIcon(primera.getImageUrl());
@@ -766,6 +766,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 			actualizarCuenta();
 			actualizarBaraja();
 		} catch (Exception e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, "Error al iniciar sesion: \n" + e.getMessage());
 		}
 	}
@@ -777,6 +778,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		actualizarCuenta();
 		actualizarBaraja();
 		} catch (Exception e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, "Error al iniciar sesion: \n" + e.getMessage());
 		}
 	}
