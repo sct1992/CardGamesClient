@@ -43,7 +43,19 @@ import common.Workspace;
 public class InterfazClient extends JFrame implements ActionListener , IListenerPush
 {
 	
-	
+	public final static String INICIAR_SESION = "INICIAR_SESION";
+	public final static String CERRAR_SESION = "CERRAR_SESION";
+	public final static String SALIR = "SALIR";
+	public final static String CREAR_CARTA = "CREAR_CARTA";
+	public final static String MAS_CARTA = "MAS_CARTA";
+	public final static String MENOS_CARTA = "MENOS_CARTA";
+	public final static String MENOS_USER = "MENOS_USER";
+	public final static String MAS_USER = "MAS_USER";
+	public final static String CREAR_WORKSPACE = "CREAR_WORKSPACE";
+	public final static String PROPONER = "PROPONER";
+	public final static String SEND = "SEND";
+	public final static String VOTAR = "VOTAR";
+
     //-----------------------------------------------------------------
     // Programa principal
     //-----------------------------------------------------------------
@@ -87,7 +99,6 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 	private JLabel lblNombre;
 	private JLabel lblCorreo;
 	private JLabel lblImagenBaraja;
-	private JList listMiBaraja;
 	private JList listUsers;
 	private JList listMyWorkspaces;
 	private JList listProponerCarta;
@@ -104,6 +115,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 	private JLabel lblNombreCartaWorkspace;
     
     private ArrayList<String> misCartasVotadas;
+    private JList listMiBaraja;
     //-----------------------------------------------------------------
     // Constructores
     //-----------------------------------------------------------------
@@ -158,13 +170,12 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
         listMiBaraja = new JList();
         listMiBaraja.addListSelectionListener(new ListSelectionListener() {
         	public void valueChanged(ListSelectionEvent arg0) {
-        		cambioListMiBaraja(arg0);	
+        			cambioListMiBaraja();
         	}
 
-		
         });
         scrollPane_1.setViewportView(listMiBaraja);
-        
+   
         btnMenosCarta = new JButton("-");
         btnMenosCarta.setBounds(10, 324, 40, 23);
         panel.add(btnMenosCarta);
@@ -220,7 +231,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
         listMyWorkspaces = new JList();
         listMyWorkspaces.addListSelectionListener(new ListSelectionListener() {
         	public void valueChanged(ListSelectionEvent arg0) {
-        		cambioWorkspace(arg0);
+        		cambioWorkspace();
         	}
 
 		
@@ -338,6 +349,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 
 	
         });
+
         scrollPane.setViewportView(listProponerCarta);
         
         JPanel panel_7 = new JPanel();
@@ -424,7 +436,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
         listJugadas = new JList();
         listJugadas.addListSelectionListener(new ListSelectionListener() {
         	public void valueChanged(ListSelectionEvent arg0) {
-        		cambioListJugadas(arg0);
+        		cambioListJugadas();
         	}
 
         });
@@ -444,7 +456,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
         listPropuestas = new JList();
         listPropuestas.addListSelectionListener(new ListSelectionListener() {
         	public void valueChanged(ListSelectionEvent arg0) {
-        		cambioListPropuestas(arg0);
+        		cambioListPropuestas();
         	}
 
 	
@@ -457,18 +469,18 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
         
         //Codigo 
         
-    	btnIniciarSesion.setActionCommand("INICIAR_SESION");
-    	btnCerrarSesion.setActionCommand("CERRAR_SESION");
-    	btnSalir.setActionCommand("SALIR");
-    	btnCrearCarta.setActionCommand("CREAR_CARTA");
-    	btnMasCarta.setActionCommand("MAS_CARTA");
-    	btnMenosCarta.setActionCommand("MENOS_CARTA");
-    	btnMenosUser.setActionCommand("MENOS_USER");
-    	btnMasUser.setActionCommand("MAS_USER");
-    	btnCrearWorkspace.setActionCommand("CREAR_WORKSPACE");
-    	btnProponer.setActionCommand("PROPONER");
-    	btnSend.setActionCommand("SEND");
-    	btnVotar.setActionCommand("VOTAR");
+    	btnIniciarSesion.setActionCommand(INICIAR_SESION);
+    	btnCerrarSesion.setActionCommand(CERRAR_SESION);
+    	btnSalir.setActionCommand(SALIR);
+    	btnCrearCarta.setActionCommand(CREAR_CARTA);
+    	btnMasCarta.setActionCommand(MAS_CARTA);
+    	btnMenosCarta.setActionCommand(MENOS_CARTA);
+    	btnMenosUser.setActionCommand(MENOS_USER);
+    	btnMasUser.setActionCommand(MAS_USER);
+    	btnCrearWorkspace.setActionCommand(CREAR_WORKSPACE);
+    	btnProponer.setActionCommand(PROPONER);
+    	btnSend.setActionCommand(SEND);
+    	btnVotar.setActionCommand(VOTAR);
     	
     	btnIniciarSesion.addActionListener(this);
     	btnCerrarSesion.addActionListener(this);
@@ -488,21 +500,27 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
        
     }
     
-	private void cambioListMiBaraja(ListSelectionEvent arg0) {
+	private void cambioListMiBaraja() {
+			Card primera = (Card) listMiBaraja.getSelectedValue();
 		
-		actualizarBaraja();
+			lblIdNombreCarta.setText(primera.getId()+" - "+ primera.getName() );	
+			ImageIcon image = new ImageIcon(primera.getImageUrl());
+			lblImagenBaraja.setIcon(image);
+		
+	
 	}
-	private void cambioWorkspace(ListSelectionEvent arg0) {
+	private void cambioWorkspace() {
+		if(listMyWorkspaces.isSelectionEmpty()==false)
+		{
 		
-		Workspace actual = (Workspace) listMyWorkspaces.getSelectedValue();
-		actualizarWorkspace(actual.getId());
-		
+		actualizarWorkspaceInfo();
+		}
 	}
-	private void cambioListPropuestas(ListSelectionEvent arg0) {
+	private void cambioListPropuestas() {
 		Card actual = (Card) listPropuestas.getSelectedValue();
 		actualizarCartaWorkspace(actual);
 	}
-	private void cambioListJugadas(ListSelectionEvent arg0) {
+	private void cambioListJugadas() {
 		Card actual = (Card) listJugadas.getSelectedValue();
 		actualizarCartaWorkspace(actual);
 		
@@ -519,62 +537,62 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		
 		String command = arg0.getActionCommand();
 		
-		if(command.equalsIgnoreCase("INICIAR_SESION"))
+		if(command.equalsIgnoreCase(INICIAR_SESION))
 		{
 			DialogInicioSesion dialogo = new DialogInicioSesion(this);
 			dialogo.setVisible(true);
 		}
-		else if(command.equals("CERRAR_SESION"))
+		else if(command.equals(CERRAR_SESION))
 		{
 			//TODO
 			interfazModoDesconectado();
 		}
-		else if(command.equals("SALIR"))
+		else if(command.equals(SALIR))
 		{
 			//TODO
 		
 		}
-		else if( command.equals("MAS_CARTA"))
+		else if( command.equals(MAS_CARTA))
 		{
 			
 			DialogAgregarCarta dialogo = new DialogAgregarCarta(this,game.getCards());
 			dialogo.setVisible(true);
 		}
-		else if( command.equals("MENOS_CARTA"))
+		else if( command.equals(MENOS_CARTA))
 		{
 			quitarCartaBaraja();
 		}
-		else if( command.equals("CREAR_CARTA"))
+		else if( command.equals(CREAR_CARTA))
 		{
 			DialogCrearCarta dialogo = new DialogCrearCarta(this);
 			dialogo.setVisible(true);
 		}
-		else if( command.equals("MAS_USER"))
+		else if( command.equals(MAS_USER))
 		{
 			DialogAgregarUsuario dialogo = new DialogAgregarUsuario(this, game.getActiveUsers());
 			dialogo.setVisible(true);
 		}
-		else if( command.equals("MENOS_USER"))
+		else if( command.equals(MENOS_USER))
 		{
 			quitarUserJuego();
 		}
-		else if( command.equals("CREAR_WORKSPACE"))
+		else if( command.equals(CREAR_WORKSPACE))
 		{
 			crearWorkspace();
 		}
-		else if( command.equals("CREAR_WORKSPACE"))
+		else if( command.equals(CREAR_WORKSPACE))
 		{
 			crearWorkspace();
 		}
-		else if( command.equals("PROPONER"))
+		else if( command.equals(PROPONER))
 		{
 			proponerCarta();
 		}
-		else if( command.equals("VOTAR"))
+		else if( command.equals(VOTAR))
 		{
 			votarCarta();
 		}
-		else if( command.equals("SEND"))
+		else if( command.equals(SEND))
 		{
 			enviarMensajeChat();
 		}
@@ -651,7 +669,8 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 	private void quitarCartaBaraja() {	
 		Card carta = (Card)listMiBaraja.getSelectedValue();
 		game.removeCardFromDeck(carta.getId());
-		actualizarBaraja();
+		
+
 	}
 
 	
@@ -737,12 +756,25 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 	}
 	
 	public void actualizarWorkspace(int id) {
+		
+		ArrayList<Workspace> workspace = game.getMyWorkspaces();
+		listMyWorkspaces.setListData(workspace.toArray());
 		this.idActiveWorkspace = id;
 		Workspace actual = game.getWorkspace(id);
 		txtAreaChat.setText(actual.getChat());
 		listPropuestas.setListData(actual.getProposedCards().toArray());
 		listJugadas.setListData(actual.getPlayedCards().toArray());
 		lblNotificacionesDelPrograma.setText("Actualizacion en el Workspace id: " + id);
+	}
+    public void actualizarWorkspaceInfo() {
+    	Workspace actual = (Workspace) listMyWorkspaces.getSelectedValue();
+		actual = game.getWorkspace(actual.getId());
+		idActiveWorkspace =actual.getId();
+		
+		txtAreaChat.setText(actual.getChat());
+		listPropuestas.setListData(actual.getProposedCards().toArray());
+		listJugadas.setListData(actual.getPlayedCards().toArray());
+		lblNotificacionesDelPrograma.setText("Actualizacion en el Workspace id: " + idActiveWorkspace + " Fecha: ( "+ new Date()+" )");
 	}
 	
 	public void actualizarCartaWorkspace(Card carta)
@@ -785,7 +817,12 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 	}
 
 	public void agregarCarta(Card carta) {
-		game.addCardToDeck(carta.getId());
+		boolean ans = game.addCardToDeck(carta.getId());
+		if(ans==false)
+		{
+			JOptionPane.showMessageDialog(this, "La carta seleccionada ya esta en tu baraja");
+			return;
+		}
 		actualizarBaraja();
 	}
 
@@ -793,6 +830,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		
 		try {
 			game.createCard(nombre, descripcion, url, lugar, categoria);
+			actualizarBaraja();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Error al crear la carta: \n" + e.getMessage());
 		}	
@@ -857,6 +895,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 			actualizarWorkspace(id);
 			JOptionPane.showMessageDialog(null, "Nuevo workspace para jugar (id: " + id+")" );
 			listMyWorkspaces.setSelectedIndex(0);
+			
 		}
 		
 		

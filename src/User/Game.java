@@ -182,6 +182,18 @@ public class Game implements IGame
 	 */
 	public boolean addCardToDeck(int cardId) {
 
+		ArrayList<Card> myDeck= getCards();
+		
+		for (int i = 0; i < myDeck.size(); i++) {
+			
+			int idTmp = myDeck.get(i).getId();
+			
+			if(idTmp==cardId)
+			{
+				return false;
+			}
+		}
+		
 		return server.addCardToDeck( user.getUsername(), cardId);
 	}
 
@@ -327,7 +339,7 @@ public class Game implements IGame
 	{
 		try 
 		{	
-			listener = new ThreadListener( new Socket( "localhost", 9999 ), user.getUsername(),this);
+			listener = new ThreadListener( new Socket( "localhost", Protocol.PUERTO_SERVER_SOCKET ), user.getUsername(),this);
 			listener.start();
 			return true;
 		} 
