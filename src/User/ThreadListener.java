@@ -111,7 +111,13 @@ public class ThreadListener extends Thread {
 			   String[] tmp = command.split(Protocol.SEPARATOR1)[1].split(Protocol.SEPARATOR2);
 			   String userCreator= tmp[0];
 			   String idThreat = tmp[1];
+			   try
+			   {
 			   game.pushedNewGame(userCreator , idThreat);
+			   }
+			   catch (Exception e) {
+				// TODO: handle exception
+			}
 		   }
 		   else if (command.startsWith(Protocol.REFRESH))
 		   {
@@ -120,6 +126,14 @@ public class ThreadListener extends Thread {
 			   boolean onTop = Boolean.parseBoolean(tmp[1]);
 			   
 			   game.pushedRefresh(idWorkspace, onTop);
+		   }
+		   else if (command.startsWith(Protocol.CLOSED_GAME))
+		   {
+			   String[] tmp = command.split(Protocol.SEPARATOR1)[1].split(Protocol.SEPARATOR2);
+			   int idWorkspace= Integer.parseInt(tmp[0]);
+			   String userThatQuits = tmp[1];
+			   
+			   game.pushedClosedGame(idWorkspace, userThatQuits);
 		   }
 		   else if (command.startsWith(Protocol.WORKSPACE_REJECTED))
 		   {

@@ -125,6 +125,8 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
      */
     public InterfazClient( )
     {
+
+    	misCartasVotadas = new ArrayList<String>();
     	idActiveWorkspace = -1;
     	game = new Game(this);
     	//CODIGO GENERADO
@@ -133,7 +135,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
         setResizable(false);
         
         setTitle( "GameCards" );
-        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         getContentPane().setLayout(null);
         
         JPanel panel = new JPanel();
@@ -500,32 +502,32 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
        
     }
     
-	private void cambioListMiBaraja() {
+	public void cambioListMiBaraja() {
 			Card primera = (Card) listMiBaraja.getSelectedValue();
 		
 			lblIdNombreCarta.setText(primera.getId()+" - "+ primera.getName() );	
 			ImageIcon image = new ImageIcon(primera.getImageUrl());
 			lblImagenBaraja.setIcon(image);
-		
+			validarFuncionamientoWorkspace();
 	
 	}
-	private void cambioWorkspace() {
+	public void cambioWorkspace() {
 		if(listMyWorkspaces.isSelectionEmpty()==false)
 		{
 		
 		actualizarWorkspaceInfo();
 		}
 	}
-	private void cambioListPropuestas() {
+	public void cambioListPropuestas() {
 		Card actual = (Card) listPropuestas.getSelectedValue();
 		actualizarCartaWorkspace(actual);
 	}
-	private void cambioListJugadas() {
+	public void cambioListJugadas() {
 		Card actual = (Card) listJugadas.getSelectedValue();
 		actualizarCartaWorkspace(actual);
 		
 	}
-	private void cambioListProponerCarta() {
+	public void cambioListProponerCarta() {
 		Card actual = (Card) listProponerCarta.getSelectedValue();
 		actualizarCartaWorkspace(actual);
 		
@@ -544,19 +546,29 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		}
 		else if(command.equals(CERRAR_SESION))
 		{
-			//TODO
-			interfazModoDesconectado();
+			try {
+				game.quit();
+				interfazModoDesconectado();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "La carta que quieres proponer ya esta en el Workspace");
+				
+			}
+		
 		}
 		else if(command.equals(SALIR))
 		{
-			//TODO
+			salirPartida();
 		
 		}
 		else if( command.equals(MAS_CARTA))
 		{
-			
+			try{
 			DialogAgregarCarta dialogo = new DialogAgregarCarta(this,game.getCards());
 			dialogo.setVisible(true);
+			} catch (Exception e) {
+
+			JOptionPane.showMessageDialog(this, "Super Fatal Error (570): " +e.getMessage());
+			}
 		}
 		else if( command.equals(MENOS_CARTA))
 		{
@@ -569,17 +581,24 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		}
 		else if( command.equals(MAS_USER))
 		{
+			try
+			{
 			DialogAgregarUsuario dialogo = new DialogAgregarUsuario(this, game.getActiveUsers());
 			dialogo.setVisible(true);
+			}
+			catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Super Fatal Error (590): " +e.getMessage());	
+			}
+			
 		}
 		else if( command.equals(MENOS_USER))
 		{
 			quitarUserJuego();
 		}
-		else if( command.equals(CREAR_WORKSPACE))
-		{
-			crearWorkspace();
-		}
+		
+		
+		
+		
 		else if( command.equals(CREAR_WORKSPACE))
 		{
 			crearWorkspace();
@@ -603,13 +622,31 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 
 	
 
-	private void enviarMensajeChat() {
+	public void salirPartida() {
+		//TODO falta mas mierda
 		
-		game.sendMessage(idActiveWorkspace, txtChatEnvio.getText());
-		txtChatEnvio.setText("");
+		try {
+			game.quitWorkspace(idActiveWorkspace);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
-	private void votarCarta() {
+	public void enviarMensajeChat() {
+		
+		try
+		{
+		game.sendMessage(idActiveWorkspace, txtChatEnvio.getText());
+		txtChatEnvio.setText("");
+		}
+		catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Super Fatal Error (633): " +e.getMessage());
+		}
+	}
+
+	public void votarCarta() {
 
 		
 		
@@ -621,15 +658,22 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		if(misCartasVotadas.contains(idTemp))
 		{
 			JOptionPane.showMessageDialog(this, "ya votaste por esta carta");
+			return;
 		}
 		
+		try{
 		game.voteCard(idActiveWorkspace, carta.getId());
 		misCartasVotadas.add(idTemp);
+		}
+		catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Super Fatal Error (657): " +e.getMessage());
+		}
 		//TODO el servidor deberia pushearme para acutalizar interfaz
 	}
 
-	private void proponerCarta() {
-		
+	public void proponerCarta() {
+try
+{
 		Card carta = (Card)listProponerCarta.getSelectedValue();
 		
 		boolean ans = game.proposeCard(idActiveWorkspace, carta.getId());
@@ -637,11 +681,15 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		 {
 				JOptionPane.showMessageDialog(this, "La carta que quieres proponer ya esta en el Workspace");
 		 }
+		 actualizarWorkspace(idActiveWorkspace);
 		//TODO el servidor deberia pushearme para acutalizar interfaz
-		
+}
+catch (Exception e) {
+	JOptionPane.showMessageDialog(this, "Super Fatal Error: " +e.getMessage());
+}		
 	}
 
-	private void crearWorkspace() {
+	public void crearWorkspace() {
 
 		ArrayList<String> nuevo = new ArrayList<String>();
 		int num = listUsers.getLastVisibleIndex();
@@ -660,16 +708,22 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this,  e.getMessage());
+			JOptionPane.showMessageDialog(this, "(699) "+ e.getMessage());
 		}
 		
 		
 	}
 
-	private void quitarCartaBaraja() {	
+	public void quitarCartaBaraja() {	
+try{
 		Card carta = (Card)listMiBaraja.getSelectedValue();
 		game.removeCardFromDeck(carta.getId());
+		actualizarBaraja();
 		
+}
+catch (Exception e) {
+	JOptionPane.showMessageDialog(this, "Super Fatal Error (711):  " +e.getMessage());
+}	
 
 	}
 
@@ -724,7 +778,8 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 	
 	public void actualizarBaraja()
 	{
-		ArrayList<Card> baraja = game.getCards();
+try{
+		ArrayList<Card> baraja = game.getMyCards();
 		listMiBaraja.setListData(baraja.toArray());
 		listProponerCarta.setListData(baraja.toArray());
 		if(baraja.isEmpty())
@@ -744,19 +799,27 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 			ImageIcon image = new ImageIcon(primera.getImageUrl());
 			lblImagenBaraja.setIcon(image);
 		}
-		
+}
+catch (Exception e) {
+	JOptionPane.showMessageDialog(this, "Super Fatal Error (790): " +e.getMessage());
+}	
 	}
 	
 	public void actualizarCuenta()
 	{
+try{
 		User user = game.getInfoUser();
 		lblUserName.setText(user.getUsername());
 		lblCorreo.setText(user.getEmail());
 		lblNombre.setText(user.getName());
-	}
+}
+catch (Exception e) {
+	JOptionPane.showMessageDialog(this, "Super Fatal Error (803): " +e.getMessage());
+}
+}
 	
 	public void actualizarWorkspace(int id) {
-		
+try{		
 		ArrayList<Workspace> workspace = game.getMyWorkspaces();
 		listMyWorkspaces.setListData(workspace.toArray());
 		this.idActiveWorkspace = id;
@@ -765,17 +828,40 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		listPropuestas.setListData(actual.getProposedCards().toArray());
 		listJugadas.setListData(actual.getPlayedCards().toArray());
 		lblNotificacionesDelPrograma.setText("Actualizacion en el Workspace id: " + id);
-	}
+}
+catch (Exception e) {
+	
+}
+}
     public void actualizarWorkspaceInfo() {
+ try{
     	Workspace actual = (Workspace) listMyWorkspaces.getSelectedValue();
 		actual = game.getWorkspace(actual.getId());
 		idActiveWorkspace =actual.getId();
 		
 		txtAreaChat.setText(actual.getChat());
+		if(actual.getProposedCards() ==null || actual.getProposedCards().isEmpty())
+		{
+			listPropuestas.setListData(new String[0]);
+		}
+		else
+		{
 		listPropuestas.setListData(actual.getProposedCards().toArray());
+		}
+		if(actual.getPlayedCards() ==null || actual.getPlayedCards().isEmpty())
+		{
+			listJugadas.setListData(new String[0]);
+		}
+		else
+		{
 		listJugadas.setListData(actual.getPlayedCards().toArray());
+		}
 		lblNotificacionesDelPrograma.setText("Actualizacion en el Workspace id: " + idActiveWorkspace + " Fecha: ( "+ new Date()+" )");
 	}
+	catch (Exception e) {
+
+	}	
+ }
 	
 	public void actualizarCartaWorkspace(Card carta)
 	{
@@ -817,6 +903,8 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 	}
 
 	public void agregarCarta(Card carta) {
+	try
+	{
 		boolean ans = game.addCardToDeck(carta.getId());
 		if(ans==false)
 		{
@@ -824,6 +912,10 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 			return;
 		}
 		actualizarBaraja();
+	}
+	catch (Exception e) {
+		JOptionPane.showMessageDialog(this, "Super Fatal Error: " +e.getMessage());
+	}
 	}
 
 	public void crearCarta(String nombre, String lugar, String categoria, String url, String descripcion) {
@@ -885,6 +977,7 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 
 	@Override
 	public void refresh(int id, boolean onTop) {
+		validarFuncionamientoWorkspace();
 		if(id==idActiveWorkspace)
 		{
 			actualizarWorkspace(id);	
@@ -901,6 +994,72 @@ public class InterfazClient extends JFrame implements ActionListener , IListener
 		
 	}
 
+	public void dispose()
+	{
+try
+{
+	if(game.getInfoUser()!=null)
+	{
+		game.quit();
+	}
+		super.dispose();
+	}
+	catch (Exception e) {
+		JOptionPane.showMessageDialog(this, "Super Fatal Error (993): " +e.getMessage());
+		super.dispose();
+	}
+}
+
+	@Override
+	public void pushedClosedGame(int idWorkspace, String userThatQuits) {
+		
+		try {
+		
+			JOptionPane.showMessageDialog(this, "La partidoa con id: " + idWorkspace + " se cerro debido a la salida del usuario: "+userThatQuits);
+			if(idActiveWorkspace==idWorkspace)
+			{
+				ArrayList<Workspace> workspace = game.getMyWorkspaces();
+			if(workspace.isEmpty())
+			{
+				idActiveWorkspace=-1;
+				validarFuncionamientoWorkspace();
+			}
+			else
+			{
+			refresh(workspace.get(0).getId(), true);
+			idActiveWorkspace = workspace.get(0).getId();
+			listMyWorkspaces.setListData(workspace.toArray());
+			}
+			
+			}
+			else
+			{
+				ArrayList<Workspace> workspace = game.getMyWorkspaces();
+				listMyWorkspaces.setListData(workspace.toArray());
+			}
+			
+		
+		
+		} catch (Exception e) {
+			
+		}
+	}
+
+	private void validarFuncionamientoWorkspace() {
+
+		if(idActiveWorkspace<0)
+		{
+			btnProponer.setEnabled(false);
+			btnSend.setEnabled(false);
+			btnVotar.setEnabled(false);
+		}
+		else
+		{
+			btnProponer.setEnabled(true);
+			btnSend.setEnabled(true);
+			btnVotar.setEnabled(true);
+		}
+	}
 	
 	
 	

@@ -124,8 +124,9 @@ public class Game implements IGame
 	 * buscar un workspace dado un id
 	 * @param id del workspace
 	 * @return workspace con el id dado
+	 * @throws Exception 
 	 */
-	public Workspace getWorkspace(int id) 
+	public Workspace getWorkspace(int id) throws Exception 
 	{
 		
 		return server.getWorkspace(id);
@@ -135,7 +136,7 @@ public class Game implements IGame
 	 * retorna un arraylist con los usuarios que estan activos en el juego
 	 * @return arraylist de usuarios activos
 	 */
-	public ArrayList<User> getActiveUsers() 
+	public ArrayList<User> getActiveUsers() throws Exception 
 	{
 		
 		return server.getActiveUsers(user.getUsername());
@@ -145,7 +146,7 @@ public class Game implements IGame
 	 * retorna las cartas a las que tiene acceso el usuario (predeterminadas mas las propias creadas)
 	 * @return arraylist de cartas 
 	 */
-	public ArrayList<Card> getCards() 
+	public ArrayList<Card> getCards() throws Exception  
 	{		
 		return server.getCards(user.getUsername());
 	}
@@ -154,7 +155,7 @@ public class Game implements IGame
 	 * retorna los workspaces activos del usuario
 	 * @return arraylist de workspaces
 	 */
-	public ArrayList<Workspace> getMyWorkspaces() 
+	public ArrayList<Workspace> getMyWorkspaces() throws Exception 
 	{
 	
 		return server.getMyWorkspaces(user.getUsername());
@@ -170,7 +171,7 @@ public class Game implements IGame
 	 * @return true si fue creada con exito, false en caso contrario
 	 * @throws Exception en caso de algun error en la creacion de la carta
 	 */
-	public boolean createCard(String name, String description, String imageUrl, String place, String category) {
+	public boolean createCard(String name, String description, String imageUrl, String place, String category) throws Exception{
 		
 		return server.createCard(name, description, imageUrl, place, user.getUsername(), category);
 	}
@@ -180,7 +181,7 @@ public class Game implements IGame
 	 * @param cardId id de la carta a añadir
 	 * @return true si se realizo correctamente
 	 */
-	public boolean addCardToDeck(int cardId) {
+	public boolean addCardToDeck(int cardId) throws Exception {
 
 		ArrayList<Card> myDeck= getCards();
 		
@@ -194,7 +195,7 @@ public class Game implements IGame
 			}
 		}
 		
-		return server.addCardToDeck( user.getUsername(), cardId);
+		return server.addCardToDeck( user.getUsername(), cardId) ;
 	}
 
 	/**
@@ -202,7 +203,7 @@ public class Game implements IGame
 	 * @param cardId id de la carta a remover
 	 * @return true si se realizo crrectamente
 	 */
-	public boolean removeCardFromDeck(int cardId) {
+	public boolean removeCardFromDeck(int cardId) throws Exception {
 		
 		return server.removeCardFromDeck( user.getUsername(), cardId);
 	}
@@ -227,7 +228,7 @@ public class Game implements IGame
 	}
 
 
-	private boolean activeWorkspaceWithUsernames(ArrayList<String> usernames)
+	private boolean activeWorkspaceWithUsernames(ArrayList<String> usernames)throws Exception 
 	{
 		
 		
@@ -263,7 +264,7 @@ public class Game implements IGame
 	 * Pre: el workspace entre los jugadores no ha sido nunca creado
      * @return true si se puede, false en caso de error
 	 */
-	public boolean startGame(ArrayList<String> usernames, int cardId) {
+	public boolean startGame(ArrayList<String> usernames, int cardId)throws Exception {
 		
 		return server.startGame( cardId, user.getUsername(),usernames);
 	}
@@ -274,7 +275,7 @@ public class Game implements IGame
 	 * @param cardId id de la carta proponer
 	 * @return true si se propone, false en caso de que la carta ya este 
 	 */
-	public boolean proposeCard(int workspaceId, int cardId) {
+	public boolean proposeCard(int workspaceId, int cardId)throws Exception  {
 		
 		Workspace actual = getWorkspace(workspaceId);
 		ArrayList<Card> cards= actual.getProposedCards();
@@ -294,7 +295,7 @@ public class Game implements IGame
 	 * @param cardId id de la carta a votar
 	 * @return true si se propone, false en caso de error
 	 */
-	public boolean voteCard(int workspaceId, int cardId) {
+	public boolean voteCard(int workspaceId, int cardId) throws Exception {
 		return server.voteCard(workspaceId, cardId);
 	}
 
@@ -304,7 +305,7 @@ public class Game implements IGame
 	 * @param message mensaje
 	 * @return true si se envio, false en caso contrario
 	 */
-	public boolean sendMessage(int workspaceId, String message) {
+	public boolean sendMessage(int workspaceId, String message)throws Exception  {
 		
 		return server.sendMessage(workspaceId, user.getUsername(), message);
 		
@@ -315,7 +316,7 @@ public class Game implements IGame
 	 * @param threadId id temporal al juego a aceptar
 	 * @return true en caso de confirmar, false en caso de error
 	 */
-	public boolean acceptGame(String threadId) {
+	public boolean acceptGame(String threadId) throws Exception {
 		
 		return server.acceptGame(threadId, user.getUsername());
 	}
@@ -325,7 +326,7 @@ public class Game implements IGame
 	 * @param threadId id de la partida a rechazar
 	 * @return true si se rechaza con exito, false en caso contrario
 	 */
-	public boolean rejectGame(String threadId) {
+	public boolean rejectGame(String threadId)throws Exception {
 	
 		return server.rejectGame(threadId, user.getUsername());
 	}
@@ -360,7 +361,7 @@ public class Game implements IGame
 		
 	}
 
-	public void pushedNewGame(String userCreator, String idThreat) {
+	public void pushedNewGame(String userCreator, String idThreat) throws Exception {
 	
 		String message = "El usuario: " + userCreator +" te esta invitando a jugar una partida con id temporal: \n" + idThreat;
 		int rta = JOptionPane.showConfirmDialog(null,message );
@@ -381,6 +382,34 @@ public class Game implements IGame
 
 	public void pushedWorkspaceRejected(String message) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void quit() throws Exception {
+		
+		server.quit(user.getUsername());
+	}
+
+	@Override
+	public ArrayList<Card> getMyCards() throws Exception {
+		
+		return server.getMyCards(user.getUsername());
+	}
+
+	public void pushedClosedGame(int idWorkspace, String userThatQuits) {
+		// TODO Auto-generated method stub
+		interfazPush.pushedClosedGame(idWorkspace,userThatQuits);
+		
+	}
+
+	@Override
+	public void quitWorkspace(int idActiveWorkspace) throws Exception {
+		
+		//TODO considerar mas mierda lo cree de afan
+		
+		server.quitWorkspace(user.getUsername(), idActiveWorkspace);
+		
 		
 	}
 	

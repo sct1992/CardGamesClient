@@ -34,32 +34,32 @@ public interface IGame
 	 * dar la informacion del usuario
 	 * @return
 	 */
-	public User getInfoUser();
+	public User getInfoUser()throws Exception ;
 	
 	/**
 	 * buscar un workspace dado un id
 	 * @param id del workspace
 	 * @return workspace con el id dado
 	 */
-	public Workspace getWorkspace(int idWorkspace);
+	public Workspace getWorkspace(int idWorkspace)throws Exception ;
 	
 	/**
 	 * retorna un arraylist con los usuarios que estan activos en el juego
 	 * @return arraylist de usuarios activos
 	 */
-	public ArrayList<User> getActiveUsers();
+	public ArrayList<User> getActiveUsers()throws Exception ;
 	
 	/**
 	 * retorna las cartas a las que tiene acceso el usuario (predeterminadas mas las propias creadas)
 	 * @return arraylist de cartas 
 	 */
-	public ArrayList<Card> getCards();
+	public ArrayList<Card> getCards()throws Exception ;
 	
 	/**
 	 * retorna los workspaces activos del usuario
 	 * @return arraylist de workspaces
 	 */
-	public ArrayList<Workspace> getMyWorkspaces();
+	public ArrayList<Workspace> getMyWorkspaces()throws Exception ;
 	
 	/**
 	 * metodo que crea una carta dado unos parametros
@@ -78,14 +78,14 @@ public interface IGame
 	 * @param cardId id de la carta a añadir
 	 * @return true si se realizo correctamente
 	 */
-	public boolean addCardToDeck(int cardId);
+	public boolean addCardToDeck(int cardId)throws Exception ;
 	
 	/**
 	 * metodo que remueve una carta de la baraja
 	 * @param cardId id de la carta a remover
 	 * @return true si se realizo crrectamente
 	 */
-	public boolean removeCardFromDeck(int cardId);
+	public boolean removeCardFromDeck(int cardId)throws Exception ;
 	
 	/**
 	 * Metodo que es llamado paracomenzar un juego, no importa si esta creado o no
@@ -101,7 +101,7 @@ public interface IGame
 	 * Pre: el workspace entre los jugadores no ha sido nunca creado
      * @return true si se puede, false en caso de error
 	 */
-	public boolean startGame(ArrayList<String> usernames, int cardId);
+	public boolean startGame(ArrayList<String> usernames, int cardId)throws Exception ;
 	
 	/**
 	 * metodo que se encarga de proponer una carta
@@ -109,7 +109,7 @@ public interface IGame
 	 * @param cardId id de la carta proponer
 	 * @return true si se propone, false en caso de error
 	 */
-	public boolean proposeCard(int workspaceId, int cardId);
+	public boolean proposeCard(int workspaceId, int cardId)throws Exception ;
 	
 	/**
 	 * metodo que se encarga de votar por una carta
@@ -117,7 +117,7 @@ public interface IGame
 	 * @param cardId id de la carta a votar
 	 * @return true si se propone, false en caso de error
 	 */
-	public boolean voteCard(int workspaceId, int cardId);
+	public boolean voteCard(int workspaceId, int cardId)throws Exception ;
 	
 	/**
 	 * metodo que envia un mensaje de chat al servidor
@@ -125,21 +125,30 @@ public interface IGame
 	 * @param message mensaje
 	 * @return true si se envio, false en caso contrario
 	 */
-	public boolean sendMessage(int workspaceId, String message);
+	public boolean sendMessage(int workspaceId, String message)throws Exception ;
 	
 	/**
 	 * metodo que acepta y confirma la invitacion a un juego 
 	 * @param threadId id temporal al juego a aceptar
 	 * @return true en caso de confirmar, false en caso de error
 	 */
-	public boolean acceptGame(String threadId);	
+	public boolean acceptGame(String threadId)throws Exception ;	
 	
 	/**
 	 * metodo que rechaza la invitacion del juego
 	 * @param threadId id de la partida a rechazar
 	 * @return true si se rechaza con exito, false en caso contrario
 	 */
-	public boolean rejectGame(String threadId);
+	public boolean rejectGame(String threadId)throws Exception ;
+
+
+	public void quit()throws Exception ;
+
+
+	public ArrayList<Card> getMyCards() throws Exception;
+
+
+	public void quitWorkspace(int idActiveWorkspace) throws Exception;
 	
 		
 }
