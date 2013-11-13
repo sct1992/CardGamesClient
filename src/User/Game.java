@@ -183,7 +183,7 @@ public class Game implements IGame
 	 */
 	public boolean addCardToDeck(int cardId) throws Exception {
 
-		ArrayList<Card> myDeck= getCards();
+		ArrayList<Card> myDeck= getMyCards();
 		
 		for (int i = 0; i < myDeck.size(); i++) {
 			
