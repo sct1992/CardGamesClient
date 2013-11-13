@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JList;
@@ -16,11 +17,23 @@ import javax.swing.JLabel;
 
 import common.User;
 
+/**
+ * 
+ * @author Santiago
+ *
+ */
 public class DialogAgregarUsuario extends JDialog implements ActionListener {
 
-
+	/**
+	 * 
+	 */
 	private InterfazClient ventana;
+	
+	/**
+	 * 
+	 */
 	private JList listUsuarios;
+	
 	/**
 	 * Create the dialog.
 	 */
@@ -55,18 +68,25 @@ public class DialogAgregarUsuario extends JDialog implements ActionListener {
 		
 		btnInvitar.setActionCommand("INVITAR");
 		btnInvitar.addActionListener(this);
-		
+		this.setLocationRelativeTo(v);
 	}
 	
 	
-	@Override
+	/**
+	 * escuchador de botones
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 	
 		String cmd = arg0.getActionCommand();
 		
 		if(cmd.equals("INVITAR"))
 		{
+			if(listUsuarios.isSelectionEmpty())
+			{
+				JOptionPane.showMessageDialog(this, "no seleccionaste nigun jugador para invitar");
+			}
 			User usuario = (User)listUsuarios.getSelectedValue();
+			
 			ventana.agregarUsuario(usuario);
 			dispose();
 			

@@ -103,8 +103,13 @@ public class ThreadListener extends Thread {
 			   String cardIdString=tmp[1];
 			   int cardId = Integer.parseInt(cardIdString);
 			   String idThreat = tmp[2];
-	
+			   try
+			   {
 			   game.pushedNewGameCard(userCreator, cardId , idThreat);
+			   }
+			   catch (Exception e) {
+	
+			}
 		   }
 		   else if(command.startsWith(Protocol.NEW_GAME))
 		   {
@@ -116,7 +121,7 @@ public class ThreadListener extends Thread {
 			   game.pushedNewGame(userCreator , idThreat);
 			   }
 			   catch (Exception e) {
-				// TODO: handle exception
+			
 			}
 		   }
 		   else if (command.startsWith(Protocol.REFRESH))

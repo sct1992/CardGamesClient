@@ -266,7 +266,17 @@ public class Game implements IGame
 	 */
 	public boolean startGame(ArrayList<String> usernames, int cardId)throws Exception {
 		
-		return server.startGame( cardId, user.getUsername(),usernames);
+		if(activeWorkspaceWithUsernames(usernames))
+		{
+		throw new Exception("Ya existe un active Workspace con los usuarios elegidos");
+		}
+		
+		if(!server.startGame(cardId,user.getUsername(),usernames))
+		{
+			throw new Exception("Error creando la partida, compañeros no encontrados");
+		}
+		return true;
+		
 	}
 
 	/**
@@ -356,8 +366,19 @@ public class Game implements IGame
 	//-------FALTA ESTO --union de interfaz-----------------------
 	//---------------------------------------------------------------
 	
-	public void pushedNewGameCard(String userCreator, int cardId,String idThreat) {
-		// TODO Auto-generated method stub
+	public void pushedNewGameCard(String userCreator, int cardId,String idThreat) throws Exception {
+		
+		String message = "El usuario: " + userCreator +" te esta invitando a jugar una partida con id temporal: \n" + idThreat + "\n e invitando a jugar la carta con ID: " + cardId;
+		int rta = JOptionPane.showConfirmDialog(null,message );
+		if(rta == JOptionPane.YES_OPTION || rta == JOptionPane.OK_OPTION)
+		{
+			server.acceptGame(idThreat, user.getUsername());
+		}
+		else
+		{
+			server.rejectGame(idThreat, user.getUsername());
+		}
+		
 		
 	}
 
@@ -381,14 +402,23 @@ public class Game implements IGame
 	}
 
 	public void pushedWorkspaceRejected(String message) {
-		// TODO Auto-generated method stub
-		
+
+		JOptionPane.showMessageDialog(null, message);
 	}
 
 	@Override
 	public void quit() throws Exception {
 		
+		
+		ArrayList<Workspace> ws = server.getMyWorkspaces(user.getUsername());
+		
+		for (int i = 0; i < ws.size(); i++) {
+			server.quitWorkspace(user.getUsername(), ws.get(i).getId());
+		}
+		
 		server.quit(user.getUsername());
+		
+		
 	}
 
 	@Override
@@ -398,7 +428,7 @@ public class Game implements IGame
 	}
 
 	public void pushedClosedGame(int idWorkspace, String userThatQuits) {
-		// TODO Auto-generated method stub
+		
 		interfazPush.pushedClosedGame(idWorkspace,userThatQuits);
 		
 	}
@@ -406,7 +436,6 @@ public class Game implements IGame
 	@Override
 	public void quitWorkspace(int idActiveWorkspace) throws Exception {
 		
-		//TODO considerar mas mierda lo cree de afan
 		
 		server.quitWorkspace(user.getUsername(), idActiveWorkspace);
 		

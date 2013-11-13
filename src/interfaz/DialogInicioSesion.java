@@ -14,7 +14,17 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 
+/**
+ * 
+ * @author Santiago
+ *
+ */
 public class DialogInicioSesion extends JDialog implements ActionListener{
+	
+	
+	/**
+	 * atributos de interfaz
+	 */
 	private JTextField txtUserLogin;
 	private JPasswordField txtPasswordLogin;
 	private JTextField txtUsername;
@@ -22,7 +32,6 @@ public class DialogInicioSesion extends JDialog implements ActionListener{
 	private JTextField txtCorreo;
 	private JTextField txtPassword;
 
-	
 	private InterfazClient ventana;
 	
 
@@ -112,10 +121,14 @@ public class DialogInicioSesion extends JDialog implements ActionListener{
 		btnSignIn.setActionCommand("SIGN_IN");
 		btnSignIn.addActionListener(this);
 		panel_1.add(btnSignIn);
+		this.setLocationRelativeTo(ventana);
 	}
 
 
-	@Override
+		
+	/**
+	 * boton listener
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
 		

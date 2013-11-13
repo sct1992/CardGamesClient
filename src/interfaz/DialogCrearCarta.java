@@ -16,15 +16,24 @@ import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+/**
+ * 
+ * @author Santiago
+ *
+ */
 public class DialogCrearCarta extends JDialog implements ActionListener {
+	
+	/**
+	 * atributos de interfaz
+	 */
 	private JTextField txtNombre;
 	private JTextField txtLugar;
 	private JTextField txtUrl;
-
-
-	private InterfazClient ventana;
 	private JTextArea txtDescripcion;
 	private JComboBox cmbCategoria;
+
+	private InterfazClient ventana;
+	
 	/**
 	 * Create the dialog.
 	 */
@@ -116,10 +125,14 @@ public class DialogCrearCarta extends JDialog implements ActionListener {
 				
 				btnCrear.setActionCommand("CREAR");
 				btnCrear.addActionListener(this);
+				this.setLocationRelativeTo(v);
 			}
 		}
 	}
-	@Override
+
+	/**
+	 * escuchador de acciones
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 	
 		String cmd = arg0.getActionCommand();

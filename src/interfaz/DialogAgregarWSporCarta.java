@@ -16,12 +16,13 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import common.Card;
+
 /**
  * 
  * @author Santiago
  *
  */
-public class DialogAgregarCarta extends JDialog implements ActionListener{
+public class DialogAgregarWSporCarta extends JDialog implements ActionListener{
 
 	/**
 	 * 
@@ -41,7 +42,7 @@ public class DialogAgregarCarta extends JDialog implements ActionListener{
 	/**
 	 * Create the dialog.
 	 */
-	public DialogAgregarCarta(InterfazClient v, ArrayList<Card> cartas) {
+	public DialogAgregarWSporCarta(InterfazClient v, ArrayList<Card> cartas) {
 		ventana=v;
 		
 		setTitle("Agregar Carta");
@@ -52,15 +53,15 @@ public class DialogAgregarCarta extends JDialog implements ActionListener{
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
-		JLabel lblSeleccionaUnaCarta = new JLabel("Selecciona una carta para tu baraja");
-		lblSeleccionaUnaCarta.setBounds(10, 11, 183, 14);
+		JLabel lblSeleccionaUnaCarta = new JLabel("Quieres a\u00F1adir una carta para invitarla a tus amigos");
+		lblSeleccionaUnaCarta.setBounds(10, 11, 205, 14);
 		contentPanel.add(lblSeleccionaUnaCarta);
 		
-		JButton btnCancelar = new JButton("Cancelar");
+		JButton btnCancelar = new JButton("No gracias");
 		btnCancelar.setBounds(10, 245, 109, 23);
 		contentPanel.add(btnCancelar);
 		
-		JButton btnAgregar = new JButton("Agregar");
+		JButton btnAgregar = new JButton("Enviar");
 		btnAgregar.setBounds(129, 245, 110, 23);
 		contentPanel.add(btnAgregar);
 		
@@ -74,7 +75,7 @@ public class DialogAgregarCarta extends JDialog implements ActionListener{
 		
 		btnCancelar.setActionCommand("CANCELAR");
 		btnCancelar.addActionListener(this);
-		this.setLocationRelativeTo(v);
+		
 		btnAgregar.setActionCommand("AGREGAR");
 		btnAgregar.addActionListener(this);
 		try
@@ -82,20 +83,22 @@ public class DialogAgregarCarta extends JDialog implements ActionListener{
 		listCarta.setSelectedIndex(0);
 		}
 		catch (Exception e) {
-	
+			// TODO: handle exception
 		}
+		this.setLocationRelativeTo(v);
 	}
 
+	
 	/**
-	 * ESCUCHADOR DE BOTONES
+	 * escuchador de botones
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		
 		String command = arg0.getActionCommand();
-
+		
 		if(command.equals("AGREGAR"))
-		{	
-
+		{
+	
 			Card carta = (Card)listCarta.getSelectedValue();
 			if(carta==null)
 			{
@@ -103,16 +106,17 @@ public class DialogAgregarCarta extends JDialog implements ActionListener{
 				dispose();
 				return;		
 			}
-			ventana.agregarCarta(carta);
+			ventana.crearWorkspacePorCarta(carta.getId());
 			dispose();
 
 		}
 		else
 		{
+			ventana.crearWorkspace();
 			dispose();
 		}
-
-
+		
+		
 	}
 	
 
